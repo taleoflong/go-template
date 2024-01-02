@@ -14,6 +14,7 @@ import (
 	"sync"
 	"strings"
 	"strconv"
+	"regexp"
 
 	"github.com/philippta/go-template/text/template"
 	"github.com/philippta/go-template/text/template/parse"
