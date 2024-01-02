@@ -571,6 +571,7 @@ func loopToReplace(s string) string {
 			for i := 0; i < len(arr); i++ {
 				tmp := strings.Split(arr[i], "=")
 				middle += strconv.Quote(tmp[0]) + " "
+				// like boolean attribute,it only has one word.
 				if len(tmp) == 2 {
 					middle += tmp[1] + " "
 				}				
