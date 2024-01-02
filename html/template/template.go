@@ -571,7 +571,9 @@ func loopToReplace(s string) string {
 			for i := 0; i < len(arr); i++ {
 				tmp := strings.Split(arr[i], "=")
 				middle += strconv.Quote(tmp[0]) + " "
-				middle += tmp[1] + " "
+				if len(tmp) == 2 {
+					middle += tmp[1] + " "
+				}				
 			}
 			middle += ") "
 			middle += "}}"
