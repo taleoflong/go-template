@@ -10,13 +10,13 @@ The new `component` element allows you to render reusable HTML template componen
 ## Install
 
 ```
-go get github.com/philippta/go-template@latest
+go get github.com/taleoflong/go-template@latest
 ```
 
 ```go
 import (
-    "github.com/philippta/go-template/html/template" // for html templates
-    "github.com/philippta/go-template/text/template" // for text templates
+    "github.com/taleoflong/go-template/html/template" // for html templates
+    "github.com/taleoflong/go-template/text/template" // for text templates
 )
 ```
 
