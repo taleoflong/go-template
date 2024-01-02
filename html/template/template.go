@@ -533,17 +533,14 @@ func readFileFS(fsys fs.FS) func(string) (string, []byte, error) {
 }
 
 func replaceToComponent(s string) string {
-	//fmt.Println("6666666666", s)
 	cnt := strings.Count(s, "<clever-")
 	for i := 0; i < cnt; i++ {
 		s = loopToReplace(s)
 	}
-	//fmt.Println("00000000", s)
 	return s
 }
 
 func loopToReplace(s string) string {
-	// TODO: 使用字符串匹配，将<clever-*>或</clever-*>替换为{{component}}和{{end}}
 	tagComponentStart := "<clever-"
 	//tagComponentEnd := "</clever-"
 	x := strings.Index(s, tagComponentStart)
