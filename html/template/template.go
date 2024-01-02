@@ -413,6 +413,8 @@ func parseFiles(t *Template, readFile func(string) (string, []byte, error), file
 			return nil, err
 		}
 		s := string(b)
+		// replace <clever-*> to {{component }},</clever-*> to  {{end}}
+		s = replaceToComponent(s)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
 		// all the templates together. Also, if this file has the same name
@@ -528,4 +530,93 @@ func readFileFS(fsys fs.FS) func(string) (string, []byte, error) {
 		b, err = fs.ReadFile(fsys, file)
 		return
 	}
+}
+
+func replaceToComponent(s string) string {
+	//fmt.Println("6666666666", s)
+	cnt := strings.Count(s, "<clever-")
+	for i := 0; i < cnt; i++ {
+		s = loopToReplace(s)
+	}
+	//fmt.Println("00000000", s)
+	return s
+}
+
+func loopToReplace(s string) string {
+	// TODO: 使用字符串匹配，将<clever-*>或</clever-*>替换为{{component}}和{{end}}
+	tagComponentStart := "<clever-"
+	//tagComponentEnd := "</clever-"
+	x := strings.Index(s, tagComponentStart)
+	if x >= 0 {
+		y := strings.Index(s[x:], ">") + 1
+		if y >= 0 {
+			firstSpaceIndex := strings.Index(s[x:(x+y)], " ")
+			var componentName string
+			if firstSpaceIndex == -1 {
+				firstSpaceIndex = strings.Index(s[x:(x+y)], ">")
+			}
+			componentName = s[(x + len(tagComponentStart)):(x + firstSpaceIndex)]
+			prev := s[0:x]
+			middle := s[x:(x + y)]
+			next := s[(x + y):]
+			attrSlice := splitWithQuotes(middle)
+			attrSlice[len(attrSlice)-1] = strings.ReplaceAll(attrSlice[len(attrSlice)-1], ">", "")
+			attrStr := strings.Join(attrSlice[1:], " ")
+			middle = strings.ReplaceAll(middle, "<clever-"+componentName, "{{component "+componentName+" }}")
+			arr := splitString(attrStr)
+			middle = ""
+			middle += "{{component "
+			middle += strconv.Quote(componentName) + " "
+			middle += "(WithComData "
+			for i := 0; i < len(arr); i++ {
+				tmp := strings.Split(arr[i], "=")
+				middle += strconv.Quote(tmp[0]) + " "
+				middle += tmp[1] + " "
+			}
+			middle += ") "
+			middle += "}}"
+			middle = strings.Replace(middle, "\\", "", -1)
+			middle = strings.ReplaceAll(middle, ">", "")
+			s = prev + middle + next
+			endTag := fmt.Sprintf("</clever-%s>", componentName)
+			s = strings.ReplaceAll(s, endTag, "{{end}}")
+		}
+	}
+	return s
+}
+
+func splitWithQuotes(s string) []string {
+	reg := regexp.MustCompile(`"[^"]*"|\S+`)
+	return reg.FindAllString(s, -1)
+}
+
+func splitString(str string) []string {
+	var result []string
+	var curr string
+	var insideQuotes bool
+
+	for _, c := range str {
+		switch c {
+		case ' ':
+			if !insideQuotes {
+				if curr != "" {
+					result = append(result, curr)
+				}
+				curr = ""
+			} else {
+				curr += string(c)
+			}
+		case '"':
+			curr += string(c)
+			insideQuotes = !insideQuotes
+		default:
+			curr += string(c)
+		}
+	}
+
+	if curr != "" {
+		result = append(result, curr)
+	}
+
+	return result
 }
