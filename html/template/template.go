@@ -570,10 +570,12 @@ func loopToReplace(s string) string {
 			middle += "(WithComData "
 			for i := 0; i < len(arr); i++ {
 				tmp := strings.Split(arr[i], "=")
-				middle += strconv.Quote(tmp[0]) + " "
-				// like boolean attribute,it only has one word.
 				if len(tmp) == 2 {
+					middle += strconv.Quote(tmp[0]) + " "
 					middle += tmp[1] + " "
+				} else if len(tmp) == 1 {
+					middle += strconv.Quote(tmp[0]) + " "
+					middle += "true" + " "
 				}				
 			}
 			middle += ") "

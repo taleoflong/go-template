@@ -20,6 +20,10 @@ import (
 )
 ```
 
+## Boolean attributes
+<clever-accordion type="single" collapsible class="w-full">
+</clever-accordion>
+
 ## Simple example
 
 There are two new elements to Go's templating language:
