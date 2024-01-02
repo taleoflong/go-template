@@ -12,6 +12,8 @@ import (
 	"path"
 	"path/filepath"
 	"sync"
+	"strings"
+	"strconv"
 
 	"github.com/philippta/go-template/text/template"
 	"github.com/philippta/go-template/text/template/parse"
